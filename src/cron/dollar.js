@@ -2,9 +2,6 @@ const cron = require('node-cron');
 const Rate = require('../models/rates');
 const obtenerValoresBCV = require('../utils/getBCVvalues');
 
-// You can import your Mongoose models here to interact with the database.
-// For example: const MyModel = require('../models/MyModel');
-
 const initCronJobs = () => {
   // Cron expression:
   // * * * * * *
@@ -16,9 +13,16 @@ const initCronJobs = () => {
   // | --------- minute (0 - 59)
   // ----------- second (0 - 59) (optional)
 
-  cron.schedule('0 6 * * *', async () => {
+  // se ejecuta todos los días a las 6:00 AM
+  cron.schedule('0 0 6 * *', async () => {
     const { euro: euroBVC, dollar: dollarBCV } =  await obtenerValoresBCV();
     const dollarYadio = fetch('https://api.yadio.io/rate/ves/usd');
+
+    await Rate.create([
+      { rate: dollarBCV, currency: 'BCV_USD' },
+      { rate: euroBVC, currency: 'BCV_EUR' }
+    ]);
+    console.log(`Rates saved: Euro BCV: ${euroBVC}, Dollar BCV: ${dollarBCV}`);
     
     dollarYadio.then(response => response.json())
       .then(async (data) => {
@@ -26,23 +30,24 @@ const initCronJobs = () => {
 
         await Rate.create({ rate: dollarYadioValue, currency: 'YD_USD' });
 
-        return res.json({
-          euro: euroBVC, 
-          dollarBCV, 
-          dollarYadio: dollarYadioValue
-        });
+        console.log(`Rate saved: Dollar Yadio: ${dollarYadioValue}`);
       })
-      .catch(() => res.json({
-        euro: euroBVC, 
-        dollarBCV, 
-        dollarYadio: 'Error fetching Yadio API' 
-      }));
+      .catch(() => console.error('Error fetching Yadio rate'));
   });
 
-  // Add more scheduled tasks as needed
-  // cron.schedule('0 0 * * *', () => {
-  //   console.log('Running a task every day at midnight');
-  // });
+  // se ejecuta cada 4 horas
+  cron.schedule('0 0 */4 * * *', () => {
+    fetch('https://api.yadio.io/rate/ves/usd')
+    .then(response => response.json())
+      .then(async (data) => {
+        const dollarYadioValue = Number(data.rate).toFixed(2);
+
+        await Rate.create({ rate: dollarYadioValue, currency: 'YD_USD' });
+
+        console.log(`Rate saved: Dollar Yadio: ${dollarYadioValue}`);
+      })
+      .catch(() => console.error('Error fetching Yadio rate'));
+  });
 };
 
 module.exports = initCronJobs;
