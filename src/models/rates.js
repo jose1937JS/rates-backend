@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 
 const schema = new mongoose.Schema({ 
     rate: Number, 
-    currency: String
+    currency: String,
+    name: String
 }, {
     timestamps: true,
     collection: 'rates'

@@ -11,7 +11,7 @@ async function getAllByCurrency(req, res) {
       return res.status(400).json({ error: 'Currency parameter is required' });
     }
 
-    const rates = await Rate.find({ currency }, { rate: 1, createdAt: 1, _id: 0, currency: 1 })
+    const rates = await Rate.find({ currency }, { rate: 1, createdAt: 1, name: 1, _id: 0, currency: 1 })
       .sort({ createdAt: -1 })
       .limit(limit)
       .skip(skip)

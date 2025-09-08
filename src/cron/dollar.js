@@ -19,7 +19,7 @@ const initCronJobs = () => {
     .then(async (data) => {
       const dollarYadioValue = Number(data.rate).toFixed(2);
 
-      await Rate.create({ rate: dollarYadioValue, currency: 'YD_USD' });
+      await Rate.create({ rate: dollarYadioValue, currency: 'YD_USD', name: 'USDT' });
 
       console.log(`Rate saved: Dollar Yadio: ${dollarYadioValue}`);
     })
@@ -31,8 +31,8 @@ const initCronJobs = () => {
     const { euro: euroBVC, dollar: dollarBCV } =  await obtenerValoresBCV();
 
     await Rate.create([
-      { rate: dollarBCV, currency: 'BCV_USD' },
-      { rate: euroBVC, currency: 'BCV_EUR' }
+      { rate: dollarBCV, currency: 'BCV_USD', name: 'Dólar' },
+      { rate: euroBVC, currency: 'BCV_EUR', name: 'Euro' }
     ]);
     console.log(`Rates saved: Euro BCV: ${euroBVC}, Dollar BCV: ${dollarBCV}`);
     
