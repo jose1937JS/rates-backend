@@ -13,10 +13,22 @@ const initCronJobs = () => {
   // | --------- minute (0 - 59)
   // ----------- second (0 - 59) (optional)
 
+  const getDollarYadio = () => {
+    fetch('https://api.yadio.io/rate/ves/usd')
+    .then(response => response.json())
+    .then(async (data) => {
+      const dollarYadioValue = Number(data.rate).toFixed(2);
+
+      await Rate.create({ rate: dollarYadioValue, currency: 'YD_USD' });
+
+      console.log(`Rate saved: Dollar Yadio: ${dollarYadioValue}`);
+    })
+    .catch(() => console.error('Error fetching Yadio rate'));
+  };
+
   // se ejecuta todos los días a las 6:00 AM
   cron.schedule('0 0 6 * *', async () => {
     const { euro: euroBVC, dollar: dollarBCV } =  await obtenerValoresBCV();
-    const dollarYadio = fetch('https://api.yadio.io/rate/ves/usd');
 
     await Rate.create([
       { rate: dollarBCV, currency: 'BCV_USD' },
@@ -24,29 +36,13 @@ const initCronJobs = () => {
     ]);
     console.log(`Rates saved: Euro BCV: ${euroBVC}, Dollar BCV: ${dollarBCV}`);
     
-    dollarYadio.then(response => response.json())
-      .then(async (data) => {
-        const dollarYadioValue = Number(data.rate).toFixed(2);
-
-        await Rate.create({ rate: dollarYadioValue, currency: 'YD_USD' });
-
-        console.log(`Rate saved: Dollar Yadio: ${dollarYadioValue}`);
-      })
-      .catch(() => console.error('Error fetching Yadio rate'));
+    // Obtener el dólar Yadio inmediatamente después de obtener los valores BCV
+    getDollarYadio();
   });
 
   // se ejecuta cada 4 horas
   cron.schedule('0 0 */4 * * *', () => {
-    fetch('https://api.yadio.io/rate/ves/usd')
-    .then(response => response.json())
-      .then(async (data) => {
-        const dollarYadioValue = Number(data.rate).toFixed(2);
-
-        await Rate.create({ rate: dollarYadioValue, currency: 'YD_USD' });
-
-        console.log(`Rate saved: Dollar Yadio: ${dollarYadioValue}`);
-      })
-      .catch(() => console.error('Error fetching Yadio rate'));
+    getDollarYadio();
   });
 };
 

@@ -1,13 +1,14 @@
-var express = require('express');
-// var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const express = require('express');
+// const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 const connectDB = require('./src/config/db');
 const initCronJobs = require('./src/cron/dollar');
 
-var indexRouter = require('./src/routes/rates');
+const indexRouter = require('./src/routes/rates');
+const testRouter = require('./src/routes/test');
 
-var app = express();
+const app = express();
 
 // Connect to the database
 connectDB();
@@ -22,5 +23,6 @@ app.use(cookieParser());
 // app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/rates', indexRouter);
+app.use('/get-actual-rates', testRouter);
 
 module.exports = app
