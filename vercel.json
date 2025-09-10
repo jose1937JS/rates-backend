@@ -3,11 +3,11 @@
   "crons": [
         {
             "path": "/src/cron/vercel/bvc.js",
-            "schedule": "0 0 6 * *"
+            "schedule": "0 6 * * *"
         },
         {
             "path": "/src/cron/vercel/yadio.js",
-            "schedule": "0 0 */4 * *"
+            "schedule": "0 */4 * * *"
         }
     ]
 }
