@@ -7,7 +7,7 @@
         },
         {
             "path": "/src/cron/vercel/yadio.js",
-            "schedule": "0 0 */4 * * *"
+            "schedule": "0 0 */4 * *"
         }
     ]
 }
