@@ -13,8 +13,10 @@ const app = express();
 // Connect to the database
 connectDB();
 
-// Initialize cron jobs
-initCronJobs();
+if (process.env.NODE_ENV !== 'production') {
+    // Initialize cron jobs only in non-production environments
+    initCronJobs();
+}
 
 app.use(logger('dev'));
 app.use(express.json());

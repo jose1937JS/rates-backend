@@ -1,6 +1,7 @@
 const cron = require('node-cron');
 const Rate = require('../models/rates');
 const obtenerValoresBCV = require('../utils/getBCVvalues');
+const getDollarYadio = require('../utils/getDollarYadio');
 
 const initCronJobs = () => {
   // Cron expression:
@@ -12,19 +13,6 @@ const initCronJobs = () => {
   // | | ------- hour (0 - 23)
   // | --------- minute (0 - 59)
   // ----------- second (0 - 59) (optional)
-
-  const getDollarYadio = () => {
-    fetch('https://api.yadio.io/rate/ves/usd')
-    .then(response => response.json())
-    .then(async (data) => {
-      const dollarYadioValue = Number(data.rate).toFixed(2);
-
-      await Rate.create({ rate: dollarYadioValue, currency: 'YD_USD', name: 'USDT' });
-
-      console.log(`Rate saved: Dollar Yadio: ${dollarYadioValue}`);
-    })
-    .catch(() => console.error('Error fetching Yadio rate'));
-  };
 
   // se ejecuta todos los días a las 6:00 AM
   cron.schedule('0 0 6 * *', async () => {
