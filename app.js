@@ -8,6 +8,7 @@ const rateLimiter = require('./src/utils/rateLimiter');
 
 const indexRouter = require('./src/routes/rates');
 const testRouter = require('./src/routes/test');
+const cronRouter = require('./src/routes/cron');
 
 const app = express();
 
@@ -33,5 +34,6 @@ app.use(rateLimiter);
 
 app.use('/rates', indexRouter);
 app.use('/get-actual-rates', testRouter);
+app.use('/cron', cronRouter);
 
 module.exports = app

@@ -1,5 +1,8 @@
 const getDollarYadio = require('../../utils/getDollarYadio');
 
-export async function handler(req, res) {
+const handler = (_, res) => {
     getDollarYadio();
+    return res.json({ message: "Se ha actualizado la tasa de yadio."})
 }
+
+module.exports = handler

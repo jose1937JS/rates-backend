@@ -52,7 +52,7 @@ const getTodayRates = async () => {
     return result;
 }
 
-router.get('/', async (req, res) => {
+router.post('/', async (_, res) => {
   const { euro: euroBVC, dollar: dollarBCV } =  await obtenerValoresBCV();
   let dollarYadioValue;
 
