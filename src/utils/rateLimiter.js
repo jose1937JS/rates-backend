@@ -13,17 +13,17 @@ const limiter = rateLimit({
         });
     },
     keyGenerator: (req, res) => {
-    const forwardedHeader = req.get('Forwarded');
-    if (forwardedHeader) {
-      // The `Forwarded` header can contain multiple IPs; get the first one.
-      const forwardedIp = forwardedHeader.split(';')[0].split('=')[1];
-      if (forwardedIp) {
-        return forwardedIp;
-      }
-    }
-    // Fallback to the default IP if the 'Forwarded' header is not available or valid.
-    return requestIp.getClientIp(req);
-  },
+        const forwardedHeader = req.get('Forwarded');
+        if (forwardedHeader) {
+            // The `Forwarded` header can contain multiple IPs; get the first one.
+            const forwardedIp = forwardedHeader.split(';')[0].split('=')[1];
+            if (forwardedIp) {
+                return forwardedIp;
+            }
+        }
+        // Fallback to the default IP if the 'Forwarded' header is not available or valid.
+        return requestIp.getClientIp(req);
+    },
 });
 
 module.exports = limiter;
