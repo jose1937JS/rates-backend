@@ -1,4 +1,5 @@
 const rateLimit = require('express-rate-limit');
+const requestIp = require('request-ip');
 
 // Configuración del limitador de tasa
 const limiter = rateLimit({
@@ -10,7 +11,19 @@ const limiter = rateLimit({
         res.status(429).json({
             error: `${options.message} ${Math.ceil(options.windowMs / 1000 / 60)} minutos.`
         });
+    },
+    keyGenerator: (req, res) => {
+    const forwardedHeader = req.get('Forwarded');
+    if (forwardedHeader) {
+      // The `Forwarded` header can contain multiple IPs; get the first one.
+      const forwardedIp = forwardedHeader.split(';')[0].split('=')[1];
+      if (forwardedIp) {
+        return forwardedIp;
+      }
     }
+    // Fallback to the default IP if the 'Forwarded' header is not available or valid.
+    return requestIp.getClientIp(req);
+  },
 });
 
 module.exports = limiter;

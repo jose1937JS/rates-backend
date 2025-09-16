@@ -12,7 +12,7 @@ const testRouter = require('./src/routes/test');
 const app = express();
 
 // Trust all proxies
-app.set('trust proxy', true);
+// app.set('trust proxy', true);
 
 // Connect to the database
 connectDB();
